@@ -1,10 +1,522 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>My Site</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>おすすめコース診断</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 600px;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+      padding: 28px 32px;
+      text-align: center;
+    }
+    .header h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 6px; }
+    .header p  { font-size: 0.9rem; opacity: 0.85; }
+
+    .progress-bar-wrap {
+      background: rgba(255,255,255,0.3);
+      border-radius: 8px;
+      height: 8px;
+      margin-top: 16px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      background: #fff;
+      height: 100%;
+      border-radius: 8px;
+      transition: width 0.4s ease;
+    }
+
+    .card {
+      padding: 36px 32px;
+    }
+
+    .step-label {
+      font-size: 0.78rem;
+      color: #9b59b6;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 12px;
+    }
+
+    .question {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #2c3e50;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    .choices {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .choice-btn {
+      padding: 14px 20px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      background: #fafafa;
+      color: #2c3e50;
+      font-size: 1rem;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    .choice-btn:hover {
+      border-color: #764ba2;
+      background: #f3eafd;
+      color: #764ba2;
+      transform: translateX(4px);
+    }
+
+    /* Result */
+    .result-card {
+      padding: 36px 32px;
+      text-align: center;
+    }
+    .result-icon { font-size: 4rem; margin-bottom: 16px; }
+    .result-title {
+      font-size: 0.85rem;
+      color: #9b59b6;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+    .result-job {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #2c3e50;
+      margin-bottom: 16px;
+    }
+    .result-course {
+      display: inline-block;
+      padding: 8px 20px;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+    .result-desc {
+      color: #555;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      margin-bottom: 32px;
+    }
+
+    .restart-btn {
+      padding: 14px 40px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      font-family: inherit;
+    }
+    .restart-btn:hover { opacity: 0.85; }
+
+    .back-btn {
+      display: block;
+      background: none;
+      border: none;
+      color: #999;
+      font-size: 0.85rem;
+      cursor: pointer;
+      margin-top: 20px;
+      text-align: center;
+      font-family: inherit;
+    }
+    .back-btn:hover { color: #555; }
+
+    /* Course color themes */
+    .course-game    { background:#fde8ff; color:#9b3cbf; }
+    .course-it      { background:#e8f0ff; color:#2a5dbf; }
+    .course-biz     { background:#e8fff0; color:#1a8c54; }
+    .course-public  { background:#fff8e8; color:#b07d00; }
+    .course-medical { background:#ffe8e8; color:#c0291e; }
+  </style>
 </head>
 <body>
-  <h1>Hello GitHub Pages</h1>
+<div class="container" id="app"></div>
+
+<script>
+// ====================================================
+//  Decision Tree Definition
+// ====================================================
+const tree = {
+  id: 'q1',
+  q: '数字や計算に抵抗はありますか？',
+  choices: [
+    { label: '抵抗あり', next: {
+      id: 'q2',
+      q: 'デザイン・映像に興味はありますか？',
+      choices: [
+        { label: '興味あり', next: {
+          id: 'q3',
+          q: '静止画と動画のどちらに興味がありますか？',
+          choices: [
+            { label: '動画', next: {
+              id: 'q4',
+              q: 'ゲーム・アニメと映像のどちらを制作したいですか？',
+              choices: [
+                { label: 'ゲーム・アニメ', next: {
+                  result: { job: 'CGクリエイター', course: 'ゲーム・CG・デザイン系', cls: 'course-game',
+                    icon: '🎮',
+                    desc: '3DCGやアニメーションを制作するスペシャリスト。ゲームや映像コンテンツに欠かせない職種です。' }
+                }},
+                { label: '映像', next: {
+                  id: 'q4b',
+                  q: 'キャラクターの作成とゲームの企画のどちらをしたいですか？',
+                  choices: [
+                    { label: 'ゲーム企画', next: {
+                      result: { job: 'ゲームクリエイター', course: 'ゲーム・CG・デザイン系', cls: 'course-game',
+                        icon: '🎲',
+                        desc: 'ゲームのシナリオや仕様を考え、プロジェクトをディレクションする企画職です。' }
+                    }},
+                    { label: 'キャラクターの生成', next: {
+                      result: { job: 'キャラクターデザイナー', course: 'ゲーム・CG・デザイン系', cls: 'course-game',
+                        icon: '✏️',
+                        desc: 'ゲームやアニメのキャラクターをデザインし、世界観を作り上げるクリエイターです。' }
+                    }},
+                  ]
+                }},
+              ]
+            }},
+            { label: '静止画', next: {
+              id: 'q5',
+              q: 'WebサイトやSNSに関わる仕事に興味はありますか？',
+              choices: [
+                { label: '興味あり', next: {
+                  id: 'q6',
+                  q: '実用的なデザインを描くことは好きですか？',
+                  choices: [
+                    { label: '好き', next: {
+                      result: { job: 'グラフィックデザイナー', course: 'ゲーム・CG・デザイン系', cls: 'course-game',
+                        icon: '🎨',
+                        desc: '広告・パッケージ・バナーなどの印刷物やデジタル媒体のビジュアルを制作します。' }
+                    }},
+                    { label: 'あまり好きではない', next: {
+                      result: { job: 'Webデザイナー', course: 'ゲーム・CG・デザイン系', cls: 'course-game',
+                        icon: '💻',
+                        desc: 'Webサイトのレイアウトや配色を決め、ユーザー体験を設計するデザイナーです。' }
+                    }},
+                  ]
+                }},
+                { label: 'あまり興味はない', next: {
+                  result: { job: 'グラフィックデザイナー', course: 'ゲーム・CG・デザイン系', cls: 'course-game',
+                    icon: '🎨',
+                    desc: '広告・パッケージ・バナーなどの印刷物やデジタル媒体のビジュアルを制作します。' }
+                }},
+              ]
+            }},
+          ]
+        }},
+        { label: 'あまり興味はない', next: {
+          id: 'q7',
+          q: '社会貢献に関わる仕事をしたいと思いますか？',
+          choices: [
+            { label: '思う', next: {
+              id: 'q8',
+              q: 'デスクワークと身体を活かす仕事のどちらがしたいですか？',
+              choices: [
+                { label: '身体を活かす', next: {
+                  id: 'q9',
+                  q: '人の安全を守ることと人を助けることのどちらに興味がありますか？',
+                  choices: [
+                    { label: '人の安全を守る', next: {
+                      result: { job: '警察官', course: '公務員公安系', cls: 'course-public',
+                        icon: '🚔',
+                        desc: '社会の安全と秩序を守る公務員。体力・正義感・判断力が求められます。' }
+                    }},
+                    { label: '人を助ける', next: {
+                      result: { job: '消防官', course: '公務員公安系', cls: 'course-public',
+                        icon: '🚒',
+                        desc: '火災や救急現場で人命救助にあたる公務員。強い使命感と体力が必要です。' }
+                    }},
+                  ]
+                }},
+                { label: 'デスクワーク', next: {
+                  id: 'q10',
+                  q: '専門性のある仕事と幅広く色々と携わる仕事のどちらに興味がありますか？',
+                  choices: [
+                    { label: '幅広く携わる仕事', next: {
+                      result: { job: '都道府県職員・市役所員', course: '公務員事務系', cls: 'course-public',
+                        icon: '🏛️',
+                        desc: '地域住民の生活を支える行政職。幅広い部署で様々な業務に携わります。' }
+                    }},
+                    { label: '専門性のある仕事', next: {
+                      result: { job: '医療事務', course: '医療事務系', cls: 'course-medical',
+                        icon: '🏥',
+                        desc: '診療報酬の請求や窓口対応など、医療機関の運営を支えるスタッフです。' }
+                    }},
+                  ]
+                }},
+              ]
+            }},
+            { label: 'あまり思わない', next: {
+              id: 'q11',
+              q: '多くの人と接する仕事に興味はありますか？',
+              choices: [
+                { label: 'あまりない', next: {
+                  result: { job: '独立経営者', course: 'ビジネスライセンス系', cls: 'course-biz',
+                    icon: '💼',
+                    desc: '自分でビジネスを立ち上げ、経営する独立型のキャリアパスです。' }
+                }},
+                { label: 'ある', next: {
+                  result: { job: '販売員', course: 'ビジネスライセンス系', cls: 'course-biz',
+                    icon: '🛍️',
+                    desc: '商品の魅力を伝え、お客様の購買をサポートする接客のプロです。' }
+                }},
+              ]
+            }},
+          ]
+        }},
+      ]
+    }},
+    { label: '抵抗なし', next: {
+      id: 'q12',
+      q: '正確さ・ルール重視の作業は平気ですか？',
+      choices: [
+        { label: '平気ではありません', next: {
+          id: 'q13',
+          q: 'パソコンや仕組み作りが好きですか？',
+          choices: [
+            { label: '好き', next: {
+              id: 'q14',
+              q: '自分でコード（プログラム）を書くことに興味はありますか？',
+              choices: [
+                { label: '興味あり', next: {
+                  id: 'q15',
+                  q: 'ゲームは好きですか？',
+                  choices: [
+                    { label: '好き', next: {
+                      result: { job: 'ゲームプログラマー', course: 'ゲーム・CG・デザイン系', cls: 'course-game',
+                        icon: '🕹️',
+                        desc: 'ゲームの動作をプログラムで実現するエンジニア。好きなゲームを自分で作れます。' }
+                    }},
+                    { label: 'あまり好きではない', next: {
+                      result: { job: 'プログラマー', course: '情報IT系', cls: 'course-it',
+                        icon: '👨‍💻',
+                        desc: 'システムやWebアプリのコーディングを担当するITエンジニアの基本職種です。' }
+                    }},
+                  ]
+                }},
+                { label: 'あまり興味はない', next: {
+                  result: { job: 'システムエンジニア', course: '情報IT系', cls: 'course-it',
+                    icon: '⚙️',
+                    desc: 'システムの設計・要件定義・管理を担当するITのまとめ役。論理的思考が重要です。' }
+                }},
+              ]
+            }},
+            { label: 'あまり好きではない', next: {
+              result: { job: 'システムエンジニア', course: '情報IT系', cls: 'course-it',
+                icon: '⚙️',
+                desc: 'システムの設計・要件定義・管理を担当するITのまとめ役。論理的思考が重要です。' }
+            }},
+          ]
+        }},
+        { label: '平気です', next: {
+          id: 'q16',
+          q: '法律と税金のどちらの制度に興味がありますか？',
+          choices: [
+            { label: '税金', next: {
+              id: 'q17',
+              q: 'チャレンジ精神はありますか？',
+              choices: [
+                { label: 'ある', next: {
+                  result: { job: '税理士', course: 'ビジネスライセンス系', cls: 'course-biz',
+                    icon: '📊',
+                    desc: '企業や個人の税務申告をサポートする国家資格者。難関資格ですがやりがい大です。' }
+                }},
+                { label: 'あまりない', next: {
+                  result: { job: '一般企業の経理職', course: 'ビジネスライセンス系', cls: 'course-biz',
+                    icon: '📒',
+                    desc: '企業の会計・財務を管理する縁の下の力持ち。安定したキャリアが築けます。' }
+                }},
+              ]
+            }},
+            { label: '法律', next: {
+              id: 'q18',
+              q: 'プレッシャーには強い方ですか？',
+              choices: [
+                { label: '強い', next: {
+                  result: { job: '公認会計士', course: 'ビジネスライセンス系', cls: 'course-biz',
+                    icon: '⚖️',
+                    desc: '企業の監査・財務諸表の証明を行う日本三大国家資格のひとつ。高収入が期待できます。' }
+                }},
+                { label: '弱い', next: {
+                  result: { job: '一般企業の経理職', course: 'ビジネスライセンス系', cls: 'course-biz',
+                    icon: '📒',
+                    desc: '企業の会計・財務を管理する縁の下の力持ち。安定としっかりした基礎が活かせます。' }
+                }},
+              ]
+            }},
+          ]
+        }},
+      ]
+    }},
+  ]
+};
+
+// ====================================================
+//  App Logic
+// ====================================================
+const app = document.getElementById('app');
+let history = []; // stack of visited nodes
+
+function countDepth(node) {
+  if (node.result) return 0;
+  let max = 0;
+  for (const c of node.choices) {
+    const d = countDepth(c.next);
+    if (d > max) max = d;
+  }
+  return max + 1;
+}
+
+const MAX_DEPTH = countDepth(tree);
+
+function stepNumber() { return history.length + 1; }
+
+function render(node) {
+  app.innerHTML = '';
+
+  if (node.result) {
+    renderResult(node.result);
+    return;
+  }
+
+  const progress = Math.round((history.length / MAX_DEPTH) * 100);
+
+  // Header
+  const hdr = document.createElement('div');
+  hdr.className = 'header';
+  hdr.innerHTML = `
+    <h1>おすすめコース診断</h1>
+    <p>質問に答えてあなたにぴったりのコースを見つけよう</p>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" style="width:${progress}%"></div>
+    </div>
+  `;
+  app.appendChild(hdr);
+
+  // Card
+  const card = document.createElement('div');
+  card.className = 'card';
+
+  const stepLbl = document.createElement('div');
+  stepLbl.className = 'step-label';
+  stepLbl.textContent = `質問 ${stepNumber()} / ${MAX_DEPTH}`;
+  card.appendChild(stepLbl);
+
+  const qEl = document.createElement('div');
+  qEl.className = 'question';
+  qEl.textContent = node.q;
+  card.appendChild(qEl);
+
+  const choices = document.createElement('div');
+  choices.className = 'choices';
+
+  node.choices.forEach(choice => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = choice.label;
+    btn.addEventListener('click', () => {
+      history.push(node);
+      render(choice.next);
+    });
+    choices.appendChild(btn);
+  });
+
+  card.appendChild(choices);
+
+  if (history.length > 0) {
+    const back = document.createElement('button');
+    back.className = 'back-btn';
+    back.textContent = '← 前の質問に戻る';
+    back.addEventListener('click', () => {
+      render(history.pop());
+    });
+    card.appendChild(back);
+  }
+
+  app.appendChild(card);
+}
+
+function renderResult(result) {
+  // Header
+  const hdr = document.createElement('div');
+  hdr.className = 'header';
+  hdr.innerHTML = `
+    <h1>診断結果</h1>
+    <p>あなたにおすすめのコースが見つかりました！</p>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" style="width:100%"></div>
+    </div>
+  `;
+  app.appendChild(hdr);
+
+  const rc = document.createElement('div');
+  rc.className = 'result-card';
+
+  rc.innerHTML = `
+    <div class="result-icon">${result.icon}</div>
+    <div class="result-title">おすすめの仕事</div>
+    <div class="result-job">${result.job}</div>
+    <span class="result-course ${result.cls}">${result.course}</span>
+    <p class="result-desc">${result.desc}</p>
+    <button class="restart-btn" id="restart-btn">もう一度診断する</button>
+  `;
+
+  if (history.length > 0) {
+    const back = document.createElement('button');
+    back.className = 'back-btn';
+    back.textContent = '← 前の質問に戻る';
+    back.addEventListener('click', () => {
+      render(history.pop());
+    });
+    rc.appendChild(back);
+  }
+
+  app.appendChild(rc);
+
+  document.getElementById('restart-btn').addEventListener('click', () => {
+    history = [];
+    render(tree);
+  });
+}
+
+// Start
+render(tree);
+</script>
 </body>
 </html>
+
