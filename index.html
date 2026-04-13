@@ -8,13 +8,13 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+      background: linear-gradient(135deg, #ffd6f0 0%, #d6e7ff 100%);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 16px;
     }
 
     .container {
@@ -27,13 +27,13 @@
     }
 
     .header {
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, #ffb3de, #b8d4ff);
       color: #fff;
-      padding: 28px 32px;
+      padding: 20px 16px;
       text-align: center;
     }
-    .header h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 6px; }
-    .header p  { font-size: 0.9rem; opacity: 0.85; }
+    .header h1 { font-size: clamp(1.25rem, 5vw, 1.6rem); font-weight: 700; margin-bottom: 6px; }
+    .header p  { font-size: clamp(0.8rem, 3.5vw, 0.9rem); opacity: 0.85; }
 
     .progress-bar-wrap {
       background: rgba(255,255,255,0.3);
@@ -50,24 +50,30 @@
     }
 
     .card {
-      padding: 36px 32px;
+      padding: 24px 16px;
+    }
+
+    @media (min-width: 480px) {
+      .card {
+        padding: 32px 24px;
+      }
     }
 
     .step-label {
-      font-size: 0.78rem;
-      color: #9b59b6;
+      font-size: clamp(0.7rem, 3vw, 0.78rem);
+      color: #d989c5;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .question {
-      font-size: 1.25rem;
+      font-size: clamp(1.1rem, 4.5vw, 1.25rem);
       font-weight: 700;
       color: #2c3e50;
       line-height: 1.6;
-      margin-bottom: 28px;
+      margin-bottom: 20px;
     }
 
     .choices {
@@ -77,91 +83,155 @@
     }
 
     .choice-btn {
-      padding: 14px 20px;
+      padding: 16px 18px;
       border: 2px solid #e0e0e0;
       border-radius: 10px;
       background: #fafafa;
       color: #2c3e50;
-      font-size: 1rem;
+      font-size: clamp(0.95rem, 4vw, 1rem);
       cursor: pointer;
       text-align: left;
       transition: all 0.2s ease;
       font-family: inherit;
+      min-height: 50px;
+      word-wrap: break-word;
     }
     .choice-btn:hover {
-      border-color: #764ba2;
-      background: #f3eafd;
-      color: #764ba2;
+      border-color: #d989c5;
+      background: #ffe8f7;
+      color: #d989c5;
       transform: translateX(4px);
+    }
+    .choice-btn:active {
+      transform: scale(0.98);
+      background: #ffd6f0;
     }
 
     /* Result */
     .result-card {
-      padding: 36px 32px;
+      padding: 24px 16px;
       text-align: center;
     }
-    .result-icon { font-size: 4rem; margin-bottom: 16px; }
+
+    @media (min-width: 480px) {
+      .result-card {
+        padding: 32px 24px;
+      }
+    }
+
+    .result-icon { font-size: clamp(3rem, 12vw, 4rem); margin-bottom: 12px; }
     .result-title {
-      font-size: 0.85rem;
-      color: #9b59b6;
+      font-size: clamp(0.75rem, 3vw, 0.85rem);
+      color: #d989c5;
       font-weight: 600;
       letter-spacing: 0.08em;
       margin-bottom: 8px;
     }
     .result-job {
-      font-size: 2rem;
+      font-size: clamp(1.5rem, 6vw, 2rem);
       font-weight: 800;
       color: #2c3e50;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
+      word-wrap: break-word;
     }
     .result-course {
       display: inline-block;
-      padding: 8px 20px;
+      padding: 8px 16px;
       border-radius: 999px;
-      font-size: 0.95rem;
+      font-size: clamp(0.85rem, 3.5vw, 0.95rem);
       font-weight: 700;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
     }
     .result-desc {
       color: #555;
-      font-size: 0.95rem;
+      font-size: clamp(0.9rem, 3.8vw, 0.95rem);
       line-height: 1.7;
-      margin-bottom: 32px;
+      margin-bottom: 24px;
+      text-align: left;
+    }
+
+    .result-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+      width: 100%;
     }
 
     .restart-btn {
-      padding: 14px 40px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      padding: 16px 32px;
+      background: linear-gradient(135deg, #ffb3de, #b8d4ff);
       color: #fff;
       border: none;
       border-radius: 999px;
-      font-size: 1rem;
+      font-size: clamp(0.95rem, 4vw, 1rem);
       font-weight: 700;
       cursor: pointer;
       transition: opacity 0.2s;
       font-family: inherit;
+      min-height: 50px;
+      width: 100%;
+      max-width: 320px;
     }
     .restart-btn:hover { opacity: 0.85; }
+    .restart-btn:active {
+      transform: scale(0.98);
+      opacity: 0.9;
+    }
+
+    .school-link-btn {
+      display: inline-block;
+      padding: 16px 32px;
+      background: #fff;
+      color: #d989c5;
+      border: 2px solid #ffb3de;
+      border-radius: 999px;
+      font-size: clamp(0.9rem, 3.8vw, 0.98rem);
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      text-decoration: none;
+      min-height: 50px;
+      width: 100%;
+      max-width: 320px;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .school-link-btn:hover {
+      background: #ffe8f7;
+      transform: translateY(-2px);
+    }
+    .school-link-btn:active {
+      transform: scale(0.98);
+      background: #ffd6f0;
+    }
 
     .back-btn {
       display: block;
       background: none;
       border: none;
       color: #999;
-      font-size: 0.85rem;
+      font-size: clamp(0.8rem, 3.5vw, 0.85rem);
       cursor: pointer;
-      margin-top: 20px;
+      margin-top: 16px;
       text-align: center;
       font-family: inherit;
+      padding: 10px;
+      min-height: 44px;
     }
     .back-btn:hover { color: #555; }
+    .back-btn:active { color: #333; }
 
-    /* Course color themes */
-    .course-game    { background:#fde8ff; color:#9b3cbf; }
-    .course-it      { background:#e8f0ff; color:#2a5dbf; }
-    .course-biz     { background:#e8fff0; color:#1a8c54; }
-    .course-public  { background:#fff8e8; color:#b07d00; }
-    .course-medical { background:#ffe8e8; color:#c0291e; }
+    /* Course color themes - Pastel */
+    .course-game    { background:#ffe8f7; color:#d989c5; }
+    .course-it      { background:#d6e7ff; color:#7ba5e3; }
+    .course-biz     { background:#d6f5e8; color:#6bc299; }
+    .course-public  { background:#fff4d6; color:#f0b963; }
+    .course-medical { background:#ffd6d6; color:#e38a8a; }
   </style>
 </head>
 <body>
@@ -171,6 +241,75 @@
 // ====================================================
 //  Decision Tree Definition
 // ====================================================
+// 共有ノード: q4 (ゲーム・アニメと映像の質問)
+const q4_node = {
+  id: 'q4',
+  q: 'ゲーム・アニメと映像のどちらを制作したいですか？',
+  choices: [
+    { label: 'ゲーム・アニメ', next: {
+      result: { job: 'CGクリエイター', course: 'ゲーム・CG・デザイン系', cls: 'course-game',
+        icon: '🎮',
+        desc: '3DCGやアニメーションを制作するスペシャリスト。ゲームや映像コンテンツに欠かせない職種です。' }
+    }},
+    { label: '映像', next: {
+      id: 'q4b',
+      q: 'キャラクターの作成とゲームの企画のどちらをしたいですか？',
+      choices: [
+        { label: 'ゲーム企画', next: {
+          result: { job: 'ゲームクリエイター', course: 'ゲーム・CG・デザイン系', cls: 'course-game',
+            icon: '🎲',
+            desc: 'ゲームのシナリオや仕様を考え、プロジェクトをディレクションする企画職です。' }
+        }},
+        { label: 'キャラクターの生成', next: {
+          result: { job: 'キャラクターデザイナー', course: 'ゲーム・CG・デザイン系', cls: 'course-game',
+            icon: '✏️',
+            desc: 'ゲームやアニメのキャラクターをデザインし、世界観を作り上げるクリエイターです。' }
+        }},
+      ]
+    }},
+  ]
+};
+
+// 共有ノード: q8 (デスクワークと身体を活かす仕事の質問)
+const q8_node = {
+  id: 'q8',
+  q: 'デスクワークと身体を活かす仕事のどちらがしたいですか？',
+  choices: [
+    { label: '身体を活かす', next: {
+      id: 'q9',
+      q: '人の安全を守ることと人を助けることのどちらに興味がありますか？',
+      choices: [
+        { label: '人の安全を守る', next: {
+          result: { job: '警察官', course: '公務員公安系', cls: 'course-public',
+            icon: '🚔',
+            desc: '社会の安全と秩序を守る公務員。体力・正義感・判断力が求められます。' }
+        }},
+        { label: '人を助ける', next: {
+          result: { job: '消防官', course: '公務員公安系', cls: 'course-public',
+            icon: '🚒',
+            desc: '火災や救急現場で人命救助にあたる公務員。強い使命感と体力が必要です。' }
+        }},
+      ]
+    }},
+    { label: 'デスクワーク', next: {
+      id: 'q10',
+      q: '専門性のある仕事と幅広く色々と携わる仕事のどちらに興味がありますか？',
+      choices: [
+        { label: '幅広く携わる仕事', next: {
+          result: { job: '都道府県職員・市役所員', course: '公務員事務系', cls: 'course-public',
+            icon: '🏛️',
+            desc: '地域住民の生活を支える行政職。幅広い部署で様々な業務に携わります。' }
+        }},
+        { label: '専門性のある仕事', next: {
+          result: { job: '医療事務', course: '医療事務系', cls: 'course-medical',
+            icon: '🏥',
+            desc: '診療報酬の請求や窓口対応など、医療機関の運営を支えるスタッフです。' }
+        }},
+      ]
+    }},
+  ]
+};
+
 const tree = {
   id: 'q1',
   q: '数字や計算に抵抗はありますか？',
@@ -183,38 +322,17 @@ const tree = {
           id: 'q3',
           q: '静止画と動画のどちらに興味がありますか？',
           choices: [
-            { label: '動画', next: {
-              id: 'q4',
-              q: 'ゲーム・アニメと映像のどちらを制作したいですか？',
-              choices: [
-                { label: 'ゲーム・アニメ', next: {
-                  result: { job: 'CGクリエイター', course: 'ゲーム・CG・デザイン系', cls: 'course-game',
-                    icon: '🎮',
-                    desc: '3DCGやアニメーションを制作するスペシャリスト。ゲームや映像コンテンツに欠かせない職種です。' }
-                }},
-                { label: '映像', next: {
-                  id: 'q4b',
-                  q: 'キャラクターの作成とゲームの企画のどちらをしたいですか？',
-                  choices: [
-                    { label: 'ゲーム企画', next: {
-                      result: { job: 'ゲームクリエイター', course: 'ゲーム・CG・デザイン系', cls: 'course-game',
-                        icon: '🎲',
-                        desc: 'ゲームのシナリオや仕様を考え、プロジェクトをディレクションする企画職です。' }
-                    }},
-                    { label: 'キャラクターの生成', next: {
-                      result: { job: 'キャラクターデザイナー', course: 'ゲーム・CG・デザイン系', cls: 'course-game',
-                        icon: '✏️',
-                        desc: 'ゲームやアニメのキャラクターをデザインし、世界観を作り上げるクリエイターです。' }
-                    }},
-                  ]
-                }},
-              ]
-            }},
+            { label: '動画', next: q4_node },
             { label: '静止画', next: {
               id: 'q5',
               q: 'WebサイトやSNSに関わる仕事に興味はありますか？',
               choices: [
                 { label: '興味あり', next: {
+                  result: { job: 'Webデザイナー', course: 'ゲーム・CG・デザイン系', cls: 'course-game',
+                    icon: '💻',
+                    desc: 'Webサイトのレイアウトや配色を決め、ユーザー体験を設計するデザイナーです。' }
+                }},
+                { label: 'あまり興味はない', next: {
                   id: 'q6',
                   q: '実用的なデザインを描くことは好きですか？',
                   choices: [
@@ -223,17 +341,8 @@ const tree = {
                         icon: '🎨',
                         desc: '広告・パッケージ・バナーなどの印刷物やデジタル媒体のビジュアルを制作します。' }
                     }},
-                    { label: 'あまり好きではない', next: {
-                      result: { job: 'Webデザイナー', course: 'ゲーム・CG・デザイン系', cls: 'course-game',
-                        icon: '💻',
-                        desc: 'Webサイトのレイアウトや配色を決め、ユーザー体験を設計するデザイナーです。' }
-                    }},
+                    { label: 'あまり好きではない', next: q4_node },
                   ]
-                }},
-                { label: 'あまり興味はない', next: {
-                  result: { job: 'グラフィックデザイナー', course: 'ゲーム・CG・デザイン系', cls: 'course-game',
-                    icon: '🎨',
-                    desc: '広告・パッケージ・バナーなどの印刷物やデジタル媒体のビジュアルを制作します。' }
                 }},
               ]
             }},
@@ -243,44 +352,7 @@ const tree = {
           id: 'q7',
           q: '社会貢献に関わる仕事をしたいと思いますか？',
           choices: [
-            { label: '思う', next: {
-              id: 'q8',
-              q: 'デスクワークと身体を活かす仕事のどちらがしたいですか？',
-              choices: [
-                { label: '身体を活かす', next: {
-                  id: 'q9',
-                  q: '人の安全を守ることと人を助けることのどちらに興味がありますか？',
-                  choices: [
-                    { label: '人の安全を守る', next: {
-                      result: { job: '警察官', course: '公務員公安系', cls: 'course-public',
-                        icon: '🚔',
-                        desc: '社会の安全と秩序を守る公務員。体力・正義感・判断力が求められます。' }
-                    }},
-                    { label: '人を助ける', next: {
-                      result: { job: '消防官', course: '公務員公安系', cls: 'course-public',
-                        icon: '🚒',
-                        desc: '火災や救急現場で人命救助にあたる公務員。強い使命感と体力が必要です。' }
-                    }},
-                  ]
-                }},
-                { label: 'デスクワーク', next: {
-                  id: 'q10',
-                  q: '専門性のある仕事と幅広く色々と携わる仕事のどちらに興味がありますか？',
-                  choices: [
-                    { label: '幅広く携わる仕事', next: {
-                      result: { job: '都道府県職員・市役所員', course: '公務員事務系', cls: 'course-public',
-                        icon: '🏛️',
-                        desc: '地域住民の生活を支える行政職。幅広い部署で様々な業務に携わります。' }
-                    }},
-                    { label: '専門性のある仕事', next: {
-                      result: { job: '医療事務', course: '医療事務系', cls: 'course-medical',
-                        icon: '🏥',
-                        desc: '診療報酬の請求や窓口対応など、医療機関の運営を支えるスタッフです。' }
-                    }},
-                  ]
-                }},
-              ]
-            }},
+            { label: '思う', next: q8_node },
             { label: 'あまり思わない', next: {
               id: 'q11',
               q: '多くの人と接する仕事に興味はありますか？',
@@ -336,11 +408,7 @@ const tree = {
                 }},
               ]
             }},
-            { label: 'あまり好きではない', next: {
-              result: { job: 'システムエンジニア', course: '情報IT系', cls: 'course-it',
-                icon: '⚙️',
-                desc: 'システムの設計・要件定義・管理を担当するITのまとめ役。論理的思考が重要です。' }
-            }},
+            { label: 'あまり好きではない', next: q8_node },
           ]
         }},
         { label: '平気です', next: {
@@ -421,7 +489,7 @@ function render(node) {
   hdr.className = 'header';
   hdr.innerHTML = `
     <h1>おすすめコース診断</h1>
-    <p>質問に答えてあなたにぴったりのコースを見つけよう</p>
+    <p>最大７個の質問に答えてぴったりのコースを探そう</p>
     <div class="progress-bar-wrap">
       <div class="progress-bar-fill" style="width:${progress}%"></div>
     </div>
@@ -487,13 +555,23 @@ function renderResult(result) {
   const rc = document.createElement('div');
   rc.className = 'result-card';
 
+  // IT・クリエイター系かどうかを判定
+  const isITCreative = result.cls === 'course-game' || result.cls === 'course-it';
+  const schoolUrl = isITCreative 
+    ? 'https://www.o-hara.ac.jp/senmon/school/okayama_it/'
+    : 'https://www.o-hara.ac.jp/senmon/school/okayama/';
+  const schoolName = isITCreative ? '岡山情報ITクリエイター専門学校' : '大原ビジネス公務員専門学校岡山校';
+
   rc.innerHTML = `
     <div class="result-icon">${result.icon}</div>
     <div class="result-title">おすすめの仕事</div>
     <div class="result-job">${result.job}</div>
     <span class="result-course ${result.cls}">${result.course}</span>
     <p class="result-desc">${result.desc}</p>
-    <button class="restart-btn" id="restart-btn">もう一度診断する</button>
+    <div class="result-buttons">
+      <a href="${schoolUrl}" target="_blank" rel="noopener noreferrer" class="school-link-btn">🏫 ${schoolName}で詳しく見る</a>
+      <button class="restart-btn" id="restart-btn">もう一度診断する</button>
+    </div>
   `;
 
   if (history.length > 0) {
